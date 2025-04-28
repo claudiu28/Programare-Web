@@ -1,0 +1,125 @@
+<!DOCtype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P2</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<form>
+    <h1>Register</h1>
+
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email"/>
+    </div>
+
+    <div>
+        <label for="username">Username</label>
+        <input type="text" id="username"/>
+    </div>
+
+    <div>
+        <label for="birthdate">Date of Birth</label>
+        <input type="date" id="birthdate"/>
+    </div>
+
+    <div>
+        <label for="age">Age</label>
+        <input type="number" id="age"/>
+    </div>
+    <div>
+        <button type="submit" id="button">Submit</button>
+    </div>
+</form>
+<script>
+    'use strict'
+
+    $('form').css({
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: '10px',
+        width: '30%',
+        border: '2px solid black'
+    });
+    $('div').each(function () {
+        $(this).css({
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '10px'
+        });
+    });
+
+    $('h1').css({
+        textAlign: 'center',
+    });
+
+    function handleClick(event) {
+        event.preventDefault();
+
+        const $email = $('#email');
+        const $username = $('#username');
+        const $birthdate = $('#birthdate');
+        const $age = $('#age');
+
+        let errorsName = []
+        if (!$email.val().includes("@")) {
+            errorsName.push("Email");
+            $email.css("border", "2px solid red");
+        } else {
+            $email.css("border", "2px solid green");
+        }
+
+        if ($username.val().length < 3) {
+            errorsName.push("Username");
+            $username.css("border", "2px solid red");
+        } else {
+            $username.css("border", "2px solid green");
+        }
+
+        if ($age.val() <= 0 || $age.val() > 120) {
+            errorsName.push("Age");
+            $age.css("border", "2px solid red");
+        } else {
+            $age.css("border", "2px solid green");
+        }
+
+        if ($birthdate.val() !== "") {
+            let date = new Date($birthdate.val())
+            let year = date.getFullYear()
+            let month = date.getMonth();
+            let day = date.getDate();
+            if ((year < 1950 || year > 2015) || (month < 1 || month > 12) || (day < 1 || day > 31)) {
+                errorsName.push("Birthdate");
+                $birthdate.css("border", "2px solid red");
+            } else {
+               $birthdate.css("border", "2px solid green");
+            }
+        } else {
+            errorsName.push("Birthdate");
+            $birthdate.css("border", "2px solid red");
+        }
+
+        if (errorsName.length === 1) {
+            let err = "Invalid  field: " + errorsName[0].toLowerCase();
+            alert(err);
+        } else if (errorsName.length > 1) {
+            let err = "Invalid fields: ";
+             {
+                 $.each(errorsName, function (i) {
+                     err += errorsName[i].toLowerCase() + ", ";
+                 });
+            }
+            err = err.slice(0, err.length - 2);
+            alert(err);
+        } else {
+            alert("Data sent successfully");
+        }
+    }
+
+    const $button = $('#button');
+    $button.on('click', handleClick);
+</script>
+</body>
+</html>

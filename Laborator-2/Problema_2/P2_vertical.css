@@ -1,0 +1,51 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+    height: 25rem;
+    background-color: red;
+    display: flex;
+    align-items: center;
+}
+
+#footer {
+    height: 25rem;
+    background-color: pink;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#main {
+    width: 75%;
+    height: 40rem;
+    background-color: green;
+    display: flex;
+    align-items: center;
+}
+
+#menu {
+    width: 25%;
+}
+
+#menu ol {
+    height: 40rem;
+    text-align: center;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    background-color: yellow;
+}
+
+#menu ol li {
+    border-bottom: 3px solid black;
+    font-weight: bold;
+    font-size: 20px;
+}

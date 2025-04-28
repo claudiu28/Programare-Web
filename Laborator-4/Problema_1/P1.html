@@ -1,0 +1,59 @@
+<!DOCtype html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>P1</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<div>
+    <label for="list_1">Mic dejun</label>
+    <select id="list_1" size="10">
+        <option value="omleta" selected>Omleta</option>
+        <option value="cereale">Cereale cu lapte</option>
+        <option value="clatite">Clatite</option>
+        <option value="iaurt">Iaurt cu fructe</option>
+        <option value="toast">Toast cu avocado</option>
+        <option value="smoothie">Smoothie</option>
+        <option value="branza">Branza cu rosii</option>
+    </select>
+</div>
+<div>
+    <label for="list_2">Desert</label>
+    <select id="list_2" size="10">
+        <option value="tiramisu" selected>Tiramisu</option>
+        <option value="prajitura">Prajitura cu ciocolata</option>
+        <option value="inghetata">Inghetata</option>
+        <option value="clatite_dulci">Clatite cu dulceata</option>
+        <option value="placinta">Placinta cu mere</option>
+        <option value="cheesecake">Cheesecake</option>
+        <option value="mousse">Mousse de ciocolata</option>
+    </select>
+</div>
+<script>
+    const divs = $('div');
+    divs.each(function() {
+        $(this).css({
+            display: 'flex',
+            flexDirection: 'column'
+        });
+    });
+    const body = $('body');
+    body.css({display : 'flex'});
+
+
+    const list_1 = $('#list_1');
+    const list_2 = $('#list_2');
+
+    function switchElement(event) {
+        if ($(event.target).prop("tagName").toLowerCase() !== 'option') {
+            return;
+        }
+        const targetList = $(event.target).parent().prop('id') === 'list_1' ? list_2 : list_1;
+        const selectedOption = $(event.target);
+        targetList.append(selectedOption);
+    }
+    $("#list_1, #list_2").on("dblclick", switchElement);
+</script>
+</body>
+</html>

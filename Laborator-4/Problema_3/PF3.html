@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fruit Memory Game</title>
+</head>
+<body>
+<table id="table-game">
+</table>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        const images = [
+            "images/ananas.webp",
+            "images/apple.webp",
+            "images/banana.webp",
+            "images/capsuni.webp",
+            "images/cirese.webp",
+            "images/mango.webp",
+            "images/struguri.webp",
+            "images/pepene.webp"
+        ];
+
+        const $table = $('#table-game');
+        let cols = 4;
+        let rows = 4;
+        let match = 0;
+        let firstCell = null;
+        let secondCell = null;
+        let canClick = true;
+
+        function generateRandom(pairs) {
+            const values = [];
+            const indices = Array.from({length: pairs}, (_, i) => i);
+
+            $.each(indices, function (_, i) {
+                values.push(i, i);
+            });
+
+            $.each(values, function (i, _) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [values[i], values[j]] = [values[j], values[i]];
+            });
+            return values;
+        }
+
+        function createTable(rows, cols, values) {
+            $table.empty();
+            let index = 0;
+
+            const rowIndices = Array.from({length: rows}, (_, i) => i);
+            const colsIndices = Array.from({length: cols}, (_, i) => i);
+
+            $.each(rowIndices, function (_, i) {
+                const $row = $('<tr></tr>');
+                $.each(colsIndices, function (_, j) {
+                    const $cell = $('<td></td>');
+                    $cell.data('value', values[index])
+                        .attr('id', `cell-${i}${j}`)
+                    const $img = $(`<img src=${images[values[index]]} alt = "picture"/>`).css(
+                        {
+                            display: 'none',
+                            maxWidth: '60px',
+                            maxHeight: '60px',
+                            margin: 'auto',
+                        }
+                    )
+                    $cell.append($img).css({
+                        width: '80px',
+                        height: '80px',
+                        border: '2px solid #333',
+                        textAlign: 'center',
+                        verticalAlign: 'middle',
+                    }).on('click', () => handleClick($cell));
+                    $row.append($cell);
+                    index++;
+                });
+                $table.append($row);
+                $table.css("border-collapse", "collapse");
+            });
+        }
+
+        function handleClick(cell) {
+            let $cell = $(cell);
+            if (!canClick || $cell.css('background-color') === "yellow" ||
+                $cell.find("img").css('display') === "block") {
+                return;
+            }
+
+            const $img = $cell.find("img");
+            $img.css('display', 'block');
+
+            if (firstCell === null) {
+                firstCell = $cell;
+            } else if (secondCell === null && $cell !== firstCell) {
+                secondCell = $cell;
+
+                if (firstCell.data('value') === secondCell.data('value')) {
+                    firstCell.find("img").css('display', 'block');
+                    secondCell.find("img").css('display', 'block');
+                    firstCell.css('background-color', 'yellow');
+                    secondCell.css('background-color', 'yellow');
+                    firstCell = null;
+                    secondCell = null;
+                    match++;
+                    verify();
+                } else {
+                    canClick = false;
+                    setTimeout(() => {
+                        firstCell.find("img").css('display','none');
+                        secondCell.find("img").css('display','none');
+                        firstCell = null;
+                        secondCell = null;
+                        canClick = true;
+                    }, 800);
+                }
+            }
+        }
+
+        function verify() {
+            if (match === (cols * rows) / 2) {
+                setTimeout(() => {
+                    alert("Game complete!");
+                }, 300);
+            }
+        }
+
+        function game() {
+            match = 0;
+            firstCell = null;
+            secondCell = null;
+            canClick = true;
+            const values = generateRandom((rows * cols) / 2);
+            createTable(rows, cols, values);
+        }
+
+        game();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCtype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P1</title>
+</head>
+<body>
+<div>
+    <label for="list_1">Mic dejun</label>
+    <select id="list_1" size="10">
+        <option value="omleta" selected>Omleta</option>
+        <option value="cereale">Cereale cu lapte</option>
+        <option value="clatite">Clatite</option>
+        <option value="iaurt">Iaurt cu fructe</option>
+        <option value="toast">Toast cu avocado</option>
+        <option value="smoothie">Smoothie</option>
+        <option value="branza">Branza cu rosii</option>
+    </select>
+</div>
+<div>
+    <label for="list_2">Desert</label>
+    <select id="list_2" size="10">
+        <option value="tiramisu" selected>Tiramisu</option>
+        <option value="prajitura">Prajitura cu ciocolata</option>
+        <option value="inghetata">Inghetata</option>
+        <option value="clatite_dulci">Clatite cu dulceata</option>
+        <option value="placinta">Placinta cu mere</option>
+        <option value="cheesecake">Cheesecake</option>
+        <option value="mousse">Mousse de ciocolata</option>
+    </select>
+</div>
+<script>
+    const divs = document.querySelectorAll('div');
+    divs.forEach(div => {
+        div.style.display = "flex";
+        div.style.flexDirection = 'column';
+    });
+    const body = document.querySelector('body');
+    body.style.display = 'flex';
+
+    function switchElement(e) {
+        const $opt = $(e.target);
+        if (!$opt.is("option")) return;
+
+        const $from = $opt.parent();
+        const $to = $from.is("#list_1") ? $("#list_2") : $("#list_1");
+
+        $opt.clone().append($to);
+        $opt.remove();
+    }
+
+    $("#list_1, #list_2").on("dblclick", switchElement);
+</script>
+</body>
+</html>

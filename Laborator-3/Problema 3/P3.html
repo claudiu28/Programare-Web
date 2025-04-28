@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>P3</title>
+</head>
+<body>
+<table id="table-game">
+
+</table>
+<script>
+    const table = document.getElementById('table-game');
+    let cols = 4;
+    let rows = 4;
+    let match = 0;
+    let firstCell = null
+    let secondCell = null
+    let canClick = true;
+
+    function generateRandom(pairs) {
+        const values = []
+        for (let i = 1; i < pairs + 1; i++) {
+            values.push(i, i);
+        }
+        for (let i = values.length - 1; i >= 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [values[i], values[j]] = [values[j], values[i]];
+        }
+        return values;
+    }
+
+    function createTable(rows, cols, values) {
+        table.innerHTML = ""
+        let index = 0;
+
+        for (let i = 0; i < rows; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < cols; j++) {
+                const cell = document.createElement('td');
+                cell.dataset.value = values[index];
+                cell.id = `cell-${i}${j}`;
+                cell.style.width = "40px";
+                cell.style.height = "40px";
+                cell.style.border = "2px solid black";
+                cell.style.textAlign = "center";
+                cell.style.verticalAlign = "middle";
+                cell.style.fontSize = "24px";
+                cell.style.cursor = "pointer";
+                cell.style.backgroundColor = "white";
+                cell.style.color = "transparent";
+                cell.addEventListener('click', () => handleClick(cell));
+                row.appendChild(cell);
+                index++;
+            }
+            table.appendChild(row);
+            table.style.borderCollapse = "collapse";
+        }
+    }
+
+    function handleClick(cell) {
+        if (!canClick || cell.style.color === 'black' || cell.style.backgroundColor === 'yellow') return;
+
+        cell.textContent = cell.dataset.value;
+        cell.style.color = "black"
+
+        if (firstCell == null) {
+            firstCell = cell;
+        } else if (secondCell == null) {
+            secondCell = cell;
+            if (firstCell.dataset.value === secondCell.dataset.value) {
+                firstCell.style.backgroundColor = "yellow";
+                secondCell.style.backgroundColor = "yellow";
+                firstCell = null;
+                secondCell = null;
+                match++;
+                verify();
+            } else {
+                canClick = false;
+                setTimeout(() => {
+                    firstCell.style.color = "transparent";
+                    secondCell.style.color = "transparent";
+                    firstCell.textContent = "";
+                    secondCell.textContent = "";
+                    firstCell = null;
+                    secondCell = null;
+                    canClick = true;
+                }, 800);
+            }
+        }
+    }
+
+    function verify() {
+        if (match === (cols * rows) / 2) {
+            setTimeout(() => {
+                alert("Game complete");
+            }, 300);
+        }
+    }
+
+    function game() {
+        match = 0;
+        firstCell = null;
+        secondCell = null;
+        canClick = true;
+        const values = generateRandom((rows * cols) / 2);
+        createTable(rows, cols, values);
+    }
+
+    game();
+</script>
+</body>
+</html>

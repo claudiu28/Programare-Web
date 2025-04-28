@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P5</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f9f9f9;
+        }
+
+        .carousel {
+            overflow: hidden;
+            width: 800px;
+            height: 600px;
+            position: relative;
+            border: 3px solid black;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .carousel ol {
+            width: calc(100% * 3);
+            height: 100%;
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .carousel ol li {
+            width: calc(100% / 3);
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carousel ol li img {
+            width: 100%;
+            height: calc(100% - 40px);
+            object-fit: contain;
+            display: block;
+        }
+
+        .carousel ol li a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            background: #888;
+            color: white;
+            height: 40px;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
+        }
+
+        .buttons button {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 25px;
+            font-size: 20px;
+            border-radius: 50%;
+        }
+
+        .indicative {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            margin: 0 5px;
+            background: cornflowerblue;
+            border-radius: 50%;
+        }
+
+        .dot.active {
+            background: black;
+        }
+    </style>
+</head>
+<body>
+<div class="carousel">
+    <ol>
+        <li>
+            <img src="imag1.webp" alt="imag_1" title="Food"/>
+            <a href="#">Somon cu legume</a>
+        </li>
+        <li>
+            <img src="imag2.webp" alt="imag_2" title="Food"/>
+            <a href="#">Paste cu sos roșu</a>
+        </li>
+        <li>
+            <img src="imag3.webp" alt="imag_3" title="Food"/>
+            <a href="#">Fructe de mare</a>
+        </li>
+    </ol>
+    <div class="buttons">
+        <button id="previous">&#10094;</button>
+        <button id="next">&#10095;</button>
+    </div>
+</div>
+
+<div class="indicative">
+    <span class="dot active" data-index="0"></span>
+    <span class="dot" data-index="1"></span>
+    <span class="dot" data-index="2"></span>
+</div>
+
+<script>
+    const carousel = document.querySelector('.carousel ol');
+    const slides = document.querySelectorAll('.carousel li');
+    const next = document.getElementById('next');
+    const previous = document.getElementById('previous');
+    const dots = document.querySelectorAll('.dot');
+
+    let index = 0;
+
+    function update() {
+        carousel.style.transform = `translateX(-${index * 33.3}%)`;
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[index].classList.add('active');
+    }
+
+    next.addEventListener('click', () => {
+        index = (index + 1) % slides.length;
+        update();
+    });
+
+    previous.addEventListener('click', () => {
+        index = (index - 1 + slides.length) % slides.length;
+        update();
+    });
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            index = parseInt(dot.dataset.index);
+            update();
+        });
+    });
+
+    setInterval(() => {
+        index = (index + 1) % slides.length;
+        update();
+    },5000);
+
+</script>
+</body>
+</html>

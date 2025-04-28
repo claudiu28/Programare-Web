@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fruit Memory Game</title>
+</head>
+<body>
+<table id="table-game">
+</table>
+
+<script>
+    const images = [
+        "images/ananas.webp",
+        "images/apple.webp",
+        "images/banana.webp",
+        "images/capsuni.webp",
+        "images/cirese.webp",
+        "images/mango.webp",
+        "images/struguri.webp",
+        "images/pepene.webp"
+    ];
+
+    const table = document.getElementById('table-game');
+    let cols = 4;
+    let rows = 4;
+    let match = 0;
+    let firstCell = null;
+    let secondCell = null;
+    let canClick = true;
+
+    function generateRandom(pairs) {
+        const values = [];
+        for (let i = 0; i < pairs; i++) {
+            values.push(i, i);
+        }
+        for (let i = values.length - 1; i >= 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [values[i], values[j]] = [values[j], values[i]];
+        }
+        return values;
+    }
+
+    function createTable(rows, cols, values) {
+        table.innerHTML = "";
+        let index = 0;
+
+        for (let i = 0; i < rows; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < cols; j++) {
+                const cell = document.createElement('td');
+                cell.dataset.value = values[index];
+                cell.id = `cell-${i}${j}`;
+
+                const img = document.createElement('img');
+                img.src = images[values[index]];
+                img.style.display = 'none'
+                img.style.maxWidth = '60px'
+                img.style.maxHeight = '60px'
+                img.style.margin = 'auto'
+                cell.appendChild(img);
+
+                cell.style.width = '80px';
+                cell.style.height = '80px';
+                cell.style.border = '2px solid #333';
+                cell.style.textAlign = 'center';
+                cell.style.verticalAlign = 'middle';
+                cell.addEventListener('click', () => handleClick(cell));
+                row.appendChild(cell);
+                index++;
+            }
+            table.appendChild(row);
+            table.style.borderCollapse = "collapse";
+        }
+    }
+
+    function handleClick(cell) {
+        if (!canClick || cell.style.backgroundColor === "yellow" ||
+            cell.querySelector("img").style.display === "block") {
+            return;
+        }
+
+        const img = cell.querySelector("img");
+        img.style.display = 'block';
+
+        if (firstCell === null) {
+            firstCell = cell;
+        } else if (secondCell === null && cell !== firstCell) {
+            secondCell = cell;
+
+            if (firstCell.dataset.value === secondCell.dataset.value) {
+                firstCell.querySelector("img").style.display = 'block';
+                secondCell.querySelector("img").style.display = 'block';
+                firstCell.style.backgroundColor = 'yellow';
+                secondCell.style.backgroundColor = 'yellow';
+                firstCell = null;
+                secondCell = null;
+                match++;
+                verify();
+            } else {
+                canClick = false;
+                setTimeout(() => {
+                    firstCell.querySelector("img").style.display = 'none';
+                    secondCell.querySelector("img").style.display = 'none';
+                    firstCell = null;
+                    secondCell = null;
+                    canClick = true;
+                }, 800);
+            }
+        }
+    }
+
+    function verify() {
+        if (match === (cols * rows) / 2) {
+            setTimeout(() => {
+                alert("Game complete!");
+            }, 300);
+        }
+    }
+
+    function game() {
+        match = 0;
+        firstCell = null;
+        secondCell = null;
+        canClick = true;
+        const values = generateRandom((rows * cols) / 2);
+        createTable(rows, cols, values);
+    }
+
+    game();
+</script>
+</body>
+</html>

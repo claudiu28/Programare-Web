@@ -1,0 +1,66 @@
+ul.dialog {
+    list-style-type: none;
+    padding: 20px;
+    margin: 0;
+}
+
+ul.dialog li {
+    position: relative;
+    max-width: 20%;
+    margin: 6em 6em 6em 6em;
+    display: block;
+    border: 2px solid black;
+    padding: 40px;
+    text-align: center;
+    flex-grow: 1;
+    border-radius: 50%;
+    color: aliceblue;
+    background-color: cadetblue;
+}
+
+li.alice::before {
+    position: absolute;
+    content: "";
+    display: block;
+    height: 250px;
+    width: 250px;
+    left: -110px;
+    transform: translateY(-50%);
+    background: url('alice.png') 0 0 no-repeat;
+    background-size: 100px 150px;
+    z-index: 1;
+}
+
+li.bob::before {
+    position: absolute;
+    content: "";
+    display: block;
+    height: 250px;
+    width: 250px;
+    left: -150px;
+    transform: translateY(-60%);
+    background: url('bob.png') 40px 0 no-repeat;
+    background-size: 100px 150px;
+}
+
+li.alice::after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 15px;
+    border-color: transparent cadetblue transparent transparent;
+    left: -10px;
+    top: 5%;
+    transform: rotate(55deg) translateY(-50%);
+}
+
+li.bob::after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 15px;
+    border-color: transparent cadetblue transparent transparent;
+    left: -10px;
+    top: 16%;
+    transform: rotate(30deg) translateY(-50%);
+}

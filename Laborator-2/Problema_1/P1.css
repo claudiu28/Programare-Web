@@ -1,0 +1,22 @@
+.main-div {
+    border: 2px solid black;
+    display: flex;
+    flex-direction: row;
+    max-width: 500px;
+    justify-content: space-around;
+}
+
+.left-div, .right-div {
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.right-div .imag-container {
+    max-width: 200px;
+}
+
+img {
+    width: 100%;
+}

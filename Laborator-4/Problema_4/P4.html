@@ -1,0 +1,144 @@
+<!DOCtype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P4</title>
+    <style>
+        table {
+            width: 40%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        th:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<table class="sortable">
+    <tr>
+        <th>Fructe</th>
+        <td>Mere</td>
+        <td>Pere</td>
+        <td>Banane</td>
+        <td>Portocale</td>
+    </tr>
+    <tr>
+        <th>Pret</th>
+        <td>3</td>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
+    </tr>
+    <tr>
+        <th>Cantitate</th>
+        <td>8</td>
+        <td>6</td>
+        <td>12</td>
+        <td>9</td>
+    </tr>
+</table>
+
+<br>
+<table class="sortable">
+    <tr>
+        <th>Legume</th>
+        <td>Roșii</td>
+        <td>Castraveți</td>
+        <td>Morcovi</td>
+        <td>Ardei</td>
+    </tr>
+    <tr>
+        <th>Pret</th>
+        <td>5</td>
+        <td>2</td>
+        <td>3</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <th>Cantitate</th>
+        <td>15</td>
+        <td>25</td>
+        <td>18</td>
+        <td>10</td>
+    </tr>
+</table>
+<br>
+<table>
+    <tr>
+        <th>Produse</th>
+        <td>Lapte</td>
+        <td>Brânză</td>
+        <td>Iaurt</td>
+        <td>Cașcaval</td>
+    </tr>
+    <tr>
+        <th>Pret</th>
+        <td>7</td>
+        <td>15</td>
+        <td>5</td>
+        <td>8</td>
+    </tr>
+    <tr>
+        <th>Cantitate</th>
+        <td>30</td>
+        <td>12</td>
+        <td>20</td>
+        <td>15</td>
+    </tr>
+</table>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.sortable').each(function () {
+            const $table = $(this);
+            $table.find('th').on('click', function () {
+                console.log($(this).parent());
+                const $clickedRow = $(this).parent();
+                const $rowIndex = $table.find('tr').index($clickedRow);
+
+                const columns = [];
+                let colNumber = $(this).parent().children().length - 1;
+
+                $.each(new Array(colNumber), function (i) {
+                    const $column = $table.find('tr').map(function () {
+                        return $(this).children().eq(i + 1).clone()
+                    }).get();
+                    columns.push($column);
+                });
+
+                columns.sort(function (a, b) {
+                    const valA = $.trim($(a[$rowIndex]).text());
+                    const valB = $.trim($(b[$rowIndex]).text());
+                    const numA = $.isNumeric(valA) ? parseFloat(valA) : NaN;
+                    const numB = $.isNumeric(valB) ? parseFloat(valB) : NaN;
+                    if (!isNaN(numA) && !isNaN(numB)) {
+                        return numA - numB;
+                    }
+                    return valA.localeCompare(valB);
+                });
+
+                $table.find('tr').each(function (rowIndices) {
+                    const $row = $(this);
+                    $(this).children().slice(1).remove();
+                    $.each(columns, function (_,col) {
+                        $row.append(col[rowIndices]);
+                    });
+                });
+
+            });
+        })});
+</script>
+</body>
+</html>

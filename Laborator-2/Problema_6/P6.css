@@ -1,0 +1,28 @@
+input {
+    background-image: url("square.jpg");
+    background-size: 26px;
+    background-repeat: repeat-x;
+    height: 25px;
+    border: none;
+    font-family: monospace;
+    font-size: 18px;
+    letter-spacing: 16px;
+    padding-left: 9px;
+}
+
+#nume-div, #prenume-div, #cnp-div {
+    margin-top: 20px;
+}
+
+#Nume, #Prenume {
+    width: 520px;
+}
+
+#CNP {
+    width: 338px;
+}
+
+label {
+    font-weight: bold;
+    font-family: "Calisto MT", monospace;
+}

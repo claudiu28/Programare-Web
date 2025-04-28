@@ -1,0 +1,49 @@
+ol{
+    list-style-type: none;
+    margin:0;
+    padding: 0;
+}
+
+
+.orizontal{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+
+a{
+    display: block;
+    height: 84px;
+    width: 84px;
+    background-image: url("css-pr4.png");
+    background-repeat: no-repeat;
+}
+
+#facebook a {background-position: 0 -84px}
+#flickr a {background-position: -84px -84px}
+#dribbble a {background-position: -168px -84px}
+#googleplus a {background-position: -252px -84px}
+#linkedin a {background-position: -336px -84px}
+#pinterest a {background-position: -420px -84px}
+#rss a {background-position: -504px -84px}
+#skype a {background-position: -588px -84px}
+#twitter a {background-position: -672px -84px}
+#vimeo a {background-position: -756px -84px}
+#youtube a{background-position: -840px -84px}
+
+#facebook a:hover {background-position: 0 0;}
+#flickr a:hover {background-position: -84px 0;}
+#dribbble a:hover {background-position: -168px 0;}
+#googleplus a:hover {background-position: -252px 0;}
+#linkedin a:hover {background-position: -336px 0;}
+#pinterest a:hover {background-position: -420px 0;}
+#rss a:hover {background-position: -504px 0;}
+#skype a:hover {background-position: -588px 0;}
+#twitter a:hover {background-position: -672px 0;}
+#vimeo a:hover {background-position: -756px 0;}
+#youtube a:hover {background-position: -840px 0;}
+
+
+

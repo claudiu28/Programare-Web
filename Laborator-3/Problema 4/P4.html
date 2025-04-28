@@ -1,0 +1,142 @@
+<!DOCtype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P4</title>
+    <style>
+        table {
+            width: 40%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        th:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<table class="sortable">
+    <tr>
+        <th>Fructe</th>
+        <td>Mere</td>
+        <td>Pere</td>
+        <td>Banane</td>
+        <td>Portocale</td>
+    </tr>
+    <tr>
+        <th>Pret</th>
+        <td>3</td>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
+    </tr>
+    <tr>
+        <th>Cantitate</th>
+        <td>8</td>
+        <td>6</td>
+        <td>12</td>
+        <td>9</td>
+    </tr>
+</table>
+
+<br>
+<table class="sortable">
+    <tr>
+        <th>Legume</th>
+        <td>Roșii</td>
+        <td>Castraveți</td>
+        <td>Morcovi</td>
+        <td>Ardei</td>
+    </tr>
+    <tr>
+        <th>Pret</th>
+        <td>5</td>
+        <td>2</td>
+        <td>3</td>
+        <td>7</td>
+    </tr>
+    <tr>
+        <th>Cantitate</th>
+        <td>15</td>
+        <td>25</td>
+        <td>18</td>
+        <td>10</td>
+    </tr>
+</table>
+<br>
+<table>
+    <tr>
+        <th>Produse</th>
+        <td>Lapte</td>
+        <td>Brânză</td>
+        <td>Iaurt</td>
+        <td>Cașcaval</td>
+    </tr>
+    <tr>
+        <th>Pret</th>
+        <td>7</td>
+        <td>15</td>
+        <td>5</td>
+        <td>8</td>
+    </tr>
+    <tr>
+        <th>Cantitate</th>
+        <td>30</td>
+        <td>12</td>
+        <td>20</td>
+        <td>15</td>
+    </tr>
+</table>
+<script>
+    const tables = document.querySelectorAll('.sortable');
+    tables.forEach(table => {
+        const rows = table.querySelectorAll('tr');
+        const headers = table.querySelectorAll('th');
+        headers.forEach(((header, index) => {
+            header.addEventListener('click', () => {
+                const data = []
+                if (index < rows.length) {
+                    const row = rows[index];
+
+                    for (let col = 1; col < row.cells.length; col++) {
+                        data.push({
+                            index: col,
+                            value: row.cells[col].textContent.trim()
+                        });
+                    }
+                }
+                data.sort((a, b) => {
+                    if (isNaN(a.value) && isNaN(b.value)) {
+                        return a.value.localeCompare(b.value);
+                    } else {
+                        return a.value - b.value;
+                    }
+                });
+                rows.forEach((row) => {
+                    let defaultValues = [];
+                    for (let col = 1; col < row.cells.length; col++) {
+                        defaultValues.push(row.cells[col].textContent.trim());
+                    }
+                    for (let i = 0; i < data.length; i++) {
+                        let colIndex = data[i].index;
+                        console.log(colIndex);
+                        row.cells[i + 1].textContent = defaultValues[colIndex - 1];
+                    }
+                });
+
+            });
+        }));
+    });
+</script>
+</body>
+</html>

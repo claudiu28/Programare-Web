@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+    background-color: red;
+    height: 25rem;
+    display: flex;
+    align-items: center;
+}
+
+#footer {
+    background-color: pink;
+    height: 25rem;
+    display: flex;
+    align-items: center;
+}
+
+#main {
+    background-color: green;
+    height: 25rem;
+    display: flex;
+    align-items: center;
+}
+
+#menu {
+    width: 100%;
+    background-color: yellow;
+}
+
+#menu > ol {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+}
+
+#menu > ol > li {
+    border-right: 2px solid black;
+    flex: 1;
+    font-size: 1.25rem;
+    text-align: center;
+}

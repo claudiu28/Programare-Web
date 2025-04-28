@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>P3</title>
+</head>
+<body>
+<table id="table-game">
+</table>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const $table = $('#table-game');
+        let cols = 4;
+        let rows = 4;
+        let match = 0;
+        let firstCell = null
+        let secondCell = null
+        let canClick = true;
+
+        function generateRandom(pairs) {
+            const values = []
+            const indices = Array.from({length: pairs}, (_, i) => i);
+            console.log(indices)
+
+            $.each(indices, function (_, i) {
+                values.push(i + 1, i + 1);
+            });
+
+            $.each(values.reverse(), function (i, _) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [values[i], values[j]] = [values[j], values[i]];
+            });
+            return values;
+        }
+
+        function createTable(rows, cols, values) {
+            $table.empty();
+            let index = 0;
+
+            const indicesRow = Array.from({length: rows}, (_, i) => i);
+            const indicesCols = Array.from({length: cols}, (_, i) => i);
+
+            $.each(indicesRow, function (_, rowIndex) {
+                const $row = $('<tr></tr>');
+                $.each(indicesCols, function (_, colIndex) {
+                    const $cell = $('<td></td>')
+                    $cell.attr('id', `cell=${rowIndex}-${colIndex}`)
+                        .data('value', values[index])
+                        .css({
+                            width: '40px',
+                            height: '40px',
+                            border: '2px solid black',
+                            textAlign: 'center',
+                            verticalAlign: 'middle',
+                            fontSize: '24px',
+                            cursor: 'pointer',
+                            backgroundColor: 'white',
+                            color: 'transparent',
+                        }).on('click', () => handleClick($cell));
+                    $row.append($cell);
+                    index++;
+                });
+                $table.append($row);
+                $table.css("border-collapse", "collapse");
+            });
+        }
+
+        function handleClick(cell) {
+            const $cell = $(cell)
+            if (!canClick || $cell.css('color') === "rgb(0,0,0)" || $cell.css('background-color') === "rgb(255,255,0)") return;
+
+            $cell.text($cell.data('value'));
+            $cell.css("color", "black");
+
+            if (!firstCell) {
+                firstCell = $cell;
+            } else if (!secondCell) {
+                secondCell = $cell;
+                if (firstCell.data('value') === secondCell.data('value')) {
+                    firstCell.css("background-color", "yellow");
+                    secondCell.css("background-color", "yellow");
+                    firstCell = null;
+                    secondCell = null;
+                    match++;
+                    verify();
+                } else {
+                    canClick = false;
+                    setTimeout(() => {
+                        firstCell.css('color', 'transparent').text('');
+                        secondCell.css('color', 'transparent').text('');
+                        firstCell = null;
+                        secondCell = null;
+                        canClick = true;
+                    }, 800);
+                }
+            }
+        }
+
+        function verify() {
+            if (match === (cols * rows) / 2) {
+                setTimeout(() => {
+                    alert("Game complete");
+                }, 300);
+            }
+        }
+
+        function game() {
+            match = 0;
+            firstCell = null;
+            secondCell = null;
+            canClick = true;
+            const values = generateRandom((rows * cols) / 2);
+            createTable(rows, cols, values);
+        }
+
+        game();
+    });
+</script>
+</body>
+</html>

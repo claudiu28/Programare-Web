@@ -1,0 +1,122 @@
+<!DOCtype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>P2</title>
+</head>
+<body>
+<form>
+    <h1>Register</h1>
+
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email"/>
+    </div>
+
+    <div>
+        <label for="username">Username</label>
+        <input type="text" id="username"/>
+    </div>
+
+    <div>
+        <label for="birthdate">Date of Birth</label>
+        <input type="date" id="birthdate"/>
+    </div>
+
+    <div>
+        <label for="age">Age</label>
+        <input type="number" id="age"/>
+    </div>
+    <div>
+        <button type="submit" id="button">Submit</button>
+    </div>
+</form>
+<script>
+    'use strict'
+
+    const form = document.querySelector('form')
+    form.style.display = 'flex';
+    form.style.flexDirection = 'column';
+    form.style.justifyContent = 'center';
+    form.style.padding = '10px';
+    form.style.width = '30%';
+    form.style.border = '2px solid black';
+
+    const divs = document.querySelectorAll('div');
+    divs.forEach(div => {
+        div.style.display = 'flex';
+        div.style.flexDirection = 'column';
+        div.style.padding = '10px';
+    });
+
+    const h1 = document.querySelector('h1');
+    h1.style.textAlign = 'center';
+
+    function handleClick(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email');
+        const username = document.getElementById('username');
+        const birthdate = document.getElementById('birthdate');
+        const age = document.getElementById('age');
+
+        let errorsName = []
+        console.log(email.tagName)
+        if (!email.value.includes("@")) {
+            errorsName.push("Email");
+            email.style.border = "2px solid red";
+        } else {
+            email.style.border = "2px solid green";
+        }
+
+        if (username.value.length < 3) {
+            errorsName.push("Username");
+            username.style.border = "2px solid red";
+        } else {
+            username.style.border = "2px solid green";
+        }
+
+        if (age.value <= 0 || age.value > 120) {
+            errorsName.push("Age");
+            age.style.border = "2px solid red";
+        } else {
+            age.style.border = "2px solid green";
+        }
+
+        if (birthdate.value !== "") {
+            let date = new Date(birthdate.value)
+            let year = date.getFullYear()
+            let month = date.getMonth();
+            let day = date.getDate();
+            if ((year < 1950 || year > 2015) || (month < 1 || month > 12) || (day < 1 || day > 31)) {
+                errorsName.push("Birthdate");
+                birthdate.style.border = "2px solid red";
+            } else {
+                birthdate.style.border = "2px solid green";
+
+            }
+        } else {
+            errorsName.push("Birthdate");
+            birthdate.style.border = "2px solid red";
+        }
+
+        if (errorsName.length === 1) {
+            let err = "Invalid  field: " + errorsName[0].toLowerCase();
+            alert(err);
+        } else if (errorsName.length > 1) {
+            let err = "Invalid fields: ";
+            for (let i = 0; i < errorsName.length; i++) {
+                err += errorsName[i].toLowerCase() + ", ";
+            }
+            err = err.slice(0, err.length - 2);
+            alert(err);
+        } else {
+            alert("Data sent successfully");
+        }
+    }
+
+    const button = document.getElementById('button');
+    button.addEventListener('click', handleClick);
+</script>
+</body>
+</html>
