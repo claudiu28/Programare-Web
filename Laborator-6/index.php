@@ -5,7 +5,7 @@ declare(strict_types=1);
 session_start();
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
-//header("Content-Security-Policy: default-src 'self'");
+header("Content-Security-Policy: default-src 'self'");
 function e(string|int|float|null $val): string
 {
     return htmlspecialchars((string)$val, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -39,38 +39,11 @@ $prevPage = max(1, $page - 1);
 $nextPage = min($pages, $page + 1);
 ?>
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <title>Produse</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 2rem;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 1rem
-        }
-
-        th,
-        td {
-            border: 1px solid #ccc;
-            padding: 6px
-        }
-
-        nav.pager {
-            margin-top: 1rem
-        }
-
-        .off {
-            pointer-events: none;
-            opacity: .4
-        }
-    </style>
 </head>
 
 <body>
@@ -108,14 +81,10 @@ $nextPage = min($pages, $page + 1);
         </tbody>
     </table>
 
-    <nav class="pager">
-        <a class="btn prev <?= $page <= 1 ? 'off' : '' ?>"
-            href="<?= e($base . 'page=' . $prevPage) ?>">Previous</a>
-
-        <span class="status">Pagina <?= $page ?> / <?= $pages ?></span>
-
-        <a class="btn next <?= $page >= $pages ? 'off' : '' ?>"
-            href="<?= e($base . 'page=' . $nextPage) ?>">Next</a>
+    <nav>
+        <a href="<?= e($base . 'page=' . $prevPage) ?>">Previous</a>
+        <span>Pagina <?= $page ?> / <?= $pages ?></span>
+        <a href="<?= e($base . 'page=' . $nextPage) ?>">Next</a>
     </nav>
 </body>
 
