@@ -1,49 +1,91 @@
 <?php
 
+declare(strict_types=1);
 
-require_once "Init/config.php";
-require_once "Repo/ProdusRepo.php";
-require_once "Security/CSRF.php";
-require_once "Security/Input.php";
+session_start();
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+//header("Content-Security-Policy: default-src 'self'");
+function e(string|int|float|null $val): string
+{
+    return htmlspecialchars((string)$val, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
 
-
+$pdo = new PDO('sqlite:' . __DIR__ . '/produse.db');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 $allowedN = [5, 10, 25, 50];
-$n = Security\Input::isInList('n', $allowedN, 10);
-try {
-    $page = Security\Input::intRange('page', 1, 10_000, 1);
-} catch (InvalidArgumentException $e) {
-    header('Location: ?page=1', true, 302);
+$n = (int)($_GET['n']   ?? 10);
+$n = in_array($n, $allowedN, true) ? $n : 10;
+
+$page = (int)($_GET['page'] ?? 1);
+$page = $page >= 1 ? $page : 1;
+
+$offset = ($page - 1) * $n;
+$stmt = $pdo->prepare('select * from produse order by id limit :lim offset :off');
+$stmt->bindValue(':lim', $n,  PDO::PARAM_INT);
+$stmt->bindValue(':off', $offset, PDO::PARAM_INT);
+$stmt->execute();
+$rows = $stmt->fetchAll();
+$total = (int)$pdo->query('select count(*) from produse')->fetchColumn();
+$pages = max(1, (int)ceil($total / $n));
+if ($page > $pages) {
+    header('Location: ?n=' . $n . '&page=1', true, 302);
     exit;
 }
-Security\Csrf::check($_GET['csrf'] ?? null);
-
-[$rows, $total] = Repo\ProdusRepo::paginare($pdo, $page, $n);
-$pages = max((int)ceil($total / $n), 1);
-$base  = '?n=' . $n . '&csrf=' . Security\Csrf::token() . '&';
+$base = '?n=' . $n . '&';
+$prevPage = max(1, $page - 1);
+$nextPage = min($pages, $page + 1);
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP 2</title>
+    <meta charset="utf-8">
+    <title>Produse</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2rem;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 1rem
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 6px
+        }
+
+        nav.pager {
+            margin-top: 1rem
+        }
+
+        .off {
+            pointer-events: none;
+            opacity: .4
+        }
+    </style>
 </head>
 
 <body>
     <h1>Produse</h1>
     <form method="get">
-        <label>Pe pagina:</label>
+        <label>N = </label>
         <select name="n">
             <?php foreach ($allowedN as $opt): ?>
-                <option value="<?= $opt ?>" <?= $opt === $n ? 'selected' : ''; ?>><?= $opt ?></option>
+                <option value="<?= $opt ?>" <?= $opt === $n ? 'selected' : '' ?>>
+                    <?= $opt ?>
+                </option>
             <?php endforeach; ?>
         </select>
         <input type="hidden" name="page" value="1">
-        <input type="hidden" name="csrf" value="<?= e(Security\Csrf::token()) ?>">
-        <button>Show</button>
+        <button>Switch</button>
     </form>
     <table>
         <thead>
@@ -65,14 +107,15 @@ $base  = '?n=' . $n . '&csrf=' . Security\Csrf::token() . '&';
             <?php endforeach; ?>
         </tbody>
     </table>
+
     <nav class="pager">
         <a class="btn prev <?= $page <= 1 ? 'off' : '' ?>"
-            href="<?= e($base . 'page=' . ($page - 1)) ?>">Previous</a>
+            href="<?= e($base . 'page=' . $prevPage) ?>">Previous</a>
 
         <span class="status">Pagina <?= $page ?> / <?= $pages ?></span>
 
         <a class="btn next <?= $page >= $pages ? 'off' : '' ?>"
-            href="<?= e($base . 'page=' . ($page + 1)) ?>">Next</a>
+            href="<?= e($base . 'page=' . $nextPage) ?>">Next</a>
     </nav>
 </body>
 
