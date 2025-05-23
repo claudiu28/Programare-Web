@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Prob 3</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div style = "display: flex; flex-direction: row; align-items: center;">
+        <h3>ID:</h3>
+        <select id="book-select" style = "margin-left: 10px;">
+          <option value="">Id Carte</option>
+        </select>
+    </div>
+  <form id="book-form" style = "display: flex; flex-direction: column; margin-top: 10px;">
+    <h3>Details:</h3>
+    <input type="hidden" id="id">
+    <label>Titlu: 
+        <input type="text" id="title" placeholder="Titlul cartii..."/>
+    </label>
+    <br>
+    <label>Autor: 
+        <input type="text" id="author" placeholder="Autorul cartii..."/>
+    </label>
+    <br>
+    <label>An: 
+        <input type="number" id="year" placeholder="Anul cartii..."/>
+    </label>
+    <br>
+    <button type="button" id="save" disabled style = "width: 20%;">Save</button>
+  </form>
+
+  <script>
+    let ok = false;
+    let currentId = "";
+
+    $.ajax({
+      url: "pb3.php",
+      method: "GET",
+      success: function (data) {
+        data.forEach(function (id) {
+          $('#book-select').append(`<option value="${id}">ID: ${id}</option>`);
+        });
+      }
+    });
+
+    $('#title, #author, #year').on('input', function () {
+      ok = true;
+      $('#save').prop('disabled', false);
+    });
+
+    $('#book-select').on('change', function () {
+      const selectedId = $(this).val();
+
+      if (ok && !confirm("Date modificate au fost modficate! Continuam?")) {
+        $(this).val(currentId); 
+        return;
+      }
+
+      if (!selectedId) return;
+
+      $.ajax({
+        url: "pb3.php",
+        method: "GET",
+        data: { id: selectedId },
+        success: function (book) {
+          $('#id').val(book.id);
+          $('#title').val(book.title);
+          $('#author').val(book.author);
+          $('#year').val(book.year);
+
+          currentId = book.id;
+          ok = false;
+          $('#save').prop('disabled', true);
+        }
+      });
+    });
+
+    $('#save').on('click', function () {
+      const data = {
+        id: $('#id').val(),
+        title: $('#title').val(),
+        author: $('#author').val(),
+        year: $('#year').val()
+      };
+
+      $.ajax({
+        url: 'pb3.php',
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (res) {
+          if (res.success) {
+            alert('Save done!');
+            ok = false;
+            $('#save').prop('disabled', true);
+          } else {
+            alert('Eroare la salvare.');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

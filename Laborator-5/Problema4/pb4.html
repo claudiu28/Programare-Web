@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prob4</title>
+  <style>
+    table{ border-collapse:collapse; margin:20px auto; }
+    td{ width:60px; height:60px; text-align:center; vertical-align:middle;font-size:2em; border:1px solid #000; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+  <table id="tabla"></table>
+  <p id="status_curent" style="text-align:center;font-weight:bold;"></p>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    const board = Array(9).fill('');
+    const userSymbol = Math.random() < 0.5 ? 'X' : 'O';
+    const pcSymbol = (userSymbol === 'X') ? 'O' : 'X';
+    let currentTurn = 'user';
+    let winnerExists = false;
+
+    function loadBoard() {
+      let toHTML = '';
+      for (let r = 0; r < 3; r++) {
+        toHTML += '<tr>';
+        for (let c = 0; c < 3; c++) {
+          const idx = r * 3 + c;
+          toHTML += `<td data-index="${idx}">${board[idx]}</td>`;
+        }
+        toHTML += '</tr>';
+      }
+      $('#tabla').html(toHTML);
+    }
+
+    function finalGame(status, winner) {
+      if (status === 'win') {
+        $('#status_curent').text(`${winner} a castigat`);
+        winnerExists = true;
+        return true;
+      }
+      if (status === 'draw') {
+        winnerExists = true;
+        $('#status_curent').text('Egal!');
+        return true;
+      }
+      return false;
+    }
+
+    $(document).on('click', 'td', function () {
+      const idx = $(this).data('index');
+      if (board[idx] || currentTurn !== 'user' || winnerExists) return;
+
+      board[idx] = userSymbol;
+      loadBoard();
+      currentTurn = 'pc';
+
+      $.ajax({
+        url: 'pb4.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ board, symbol: userSymbol }),
+        success: res => {
+          if (res.board) {
+            for (let i = 0; i < 9; i++) {
+              board[i] = res.board[i];
+            }
+            loadBoard();
+          }
+          finalGame(res.status, res.winner);
+          currentTurn = 'user';
+        },
+        error: () => alert('Eroare la AJAX')
+      });
+    });
+
+    $(function () {
+      $('#status_curent').text(`Joci cu: ${userSymbol}`);
+      loadBoard();
+    });
+  </script>
+</body>
+</html>

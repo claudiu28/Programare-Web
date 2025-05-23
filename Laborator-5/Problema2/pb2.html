@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prob 2</title>
+</head>
+<body>
+<div style="display:flex; flex-direction: column; align-items: center; justify-content: center;">
+    <h2>Inregistrari</h2>
+    <div id="rezultate"></div>
+    <span id="pagina"></span>
+    <div style="margin-top: 20px;">
+        <button id="previous">Previous</button>
+        <button id="next">Next</button>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let currentPage = 1;
+
+    function loadPage(pagina) {
+        $.ajax(
+            {
+                url: 'pb2.php',
+                method: 'GET',
+                data: {pagina: pagina},
+                success: function (data) {
+                    if (data.error) {
+                        $('#rezultate').html(`<p style = "color: red">${data.error}</p>`);
+                        return;
+                    }
+                    let toHTML = `
+                                <table border="1" cellspacing="0" cellpadding="8">
+                                    <thead>
+                                    <tr>
+                                        <th>Nume</th>
+                                        <th>Telefon</th>
+                                        <th>Email</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                `;
+
+                    data.date.forEach(function (row) {
+                        toHTML += `
+                            <tr>
+                                <td>${row.nume} ${row.prenume}</td>
+                                <td>${row.telefon}</td>
+                                <td>${row.email}</td>
+                            </tr>
+                        `;
+                    });
+
+                    toHTML += `
+                            </tbody>
+                        </table>
+                        `;
+                    $('#rezultate').html(toHTML);
+
+                    currentPage = data.pagina;
+                    $('#pagina').text(`Pagina ${currentPage}`);
+
+
+                    $('#previous').prop('disabled', currentPage === 1);
+                    $('#next').prop('disabled', currentPage >= data.total);
+                },
+                error: function (error) {
+                    $('#rezultate').html('Eroare la incarcarea datelor');
+                }
+            }
+        )
+    }
+
+    $('#previous').click(function () {
+        loadPage(currentPage - 1);
+    });
+    $('#next').click(function () {
+        loadPage(currentPage + 1);
+    });
+
+    $(document).ready(function () {
+        loadPage(1);
+    });
+</script>
+</body>
+</html>

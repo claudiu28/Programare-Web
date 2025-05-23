@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prob 1</title>
+</head>
+<body>
+    <h2>Selectare Statii</h2>
+    <label for = "plecare">Plecare:</label>
+    <select id = "plecare">
+        <option value="">Selecteaza</option>
+        <option value = "Oras1">Oras1</option>
+        <option value = "Oras2">Oras2</option>
+        <option value = "Oras3">Oras3</option>
+        <option value = "Oras4">Oras4</option>
+        <option value = "Oras5">Oras5</option>
+        <option value = "Oras6">Oras6</option>
+        <option value = "Oras7">Oras7</option>
+        <option value = "Oras8">Oras8</option>
+    </select>
+    <label for = "sosire">Sosire:</label>
+    <select id  = "sosire">
+        <option value = "">Selecteaza plecare</option>
+    </select>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#plecare').change(function(){
+                const plecare = $(this).val();
+                if(plecare !== ""){
+                    $.ajax({
+                        url:"pb1.php",
+                        method:"GET",
+                        data: {plecare : plecare},
+                        success: function(data){
+                            let toHTML = '<option value ="">Alegeti sosirea</option>';
+                            data.forEach(function(oras){
+                                toHTML += `<option value ="${oras}">${oras}</option>`
+                            });
+                            $('#sosire').html(toHTML);
+                        },
+                        error: function(error){
+                            $('#sosire').html('<option>Eroare la incarcarea datelor</option>');
+                        }
+                    });
+                }else {
+                    $('#sosire').html('<option>Alegeti plecarea</option>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
